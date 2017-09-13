@@ -1,0 +1,48 @@
+﻿@model InvoiceDemo.Models.Client
+
+
+
+<h2>testClientView</h2>
+
+<div class="panel-body">
+    @Html.DropDownListFor(model => model.ID,
+                                         new SelectList(@ViewBag.Clients, "ID", "Name"),    // Selection options
+                                            "Select Client",
+                                            new
+                                            {
+                                                @class = "form-control",
+                                                onchange = "onClientIndexChange($(this).find('option:selected').val());"
+                                            })
+</div>
+
+<div id="clientDetails" class="panel-footer">Select a Client!</div>
+
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+    // Upon receiving the clientId make an ajax request to find the client and then display the
+    // client details in the clientDetails div
+    function onClientIndexChange(selectedClientId) {
+        //var urlRegisterPartner = 'InvoiceController/GetClientPartial';
+        //alert(urlRegisterPartner);
+        //alert(selectedClientId);
+
+        // Make a ajax call to the controller to find the client with the selected id
+        // And show the client in the client div upon success
+        $.ajax({
+            
+            url: '@Url.Action("GetClientPartial", "Invoice")',
+            type: 'GET',
+            data: { clientId: selectedClientId },   // Set the selected clientId as the argument for the controller
+            success: function (response) {
+                // when the AJAX succeeds refresh the div with
+                // the partial HTML returned by the Invoice controller action
+                $('#clientDetails').html(response);
+            }
+        });
+    }
+</script>
+}

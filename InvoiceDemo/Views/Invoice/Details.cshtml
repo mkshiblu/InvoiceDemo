@@ -1,0 +1,42 @@
+﻿@model InvoiceDemo.Models.Invoice
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="container">
+        <div class="col-md-5">
+            <div class="form-area">
+                <form role="form">
+                    <br style="clear:both">
+                    <h3 style="margin-bottom: 25px; text-align: center;">Invocie No: @Html.DisplayFor(model => model.ID)</h3>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Client.Name)
+                        @Html.DisplayFor(model => model.Client.Name)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.InvoiceDate)
+                        @Html.DisplayFor(model => model.InvoiceDate)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TotalSalesTax)
+                        @Html.DisplayFor(model => model.TotalSalesTax)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.GrandTotal)
+                        @Html.DisplayFor(model => model.GrandTotal)
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("../InvoiceItem/Index", Model.InvoiceItems)
+        </div>
+    </div>
+</div>
+

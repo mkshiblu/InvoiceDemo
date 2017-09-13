@@ -1,0 +1,93 @@
+﻿@model InvoiceDemo.Models.Invoice
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Invoice</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.InvoiceItems)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Client.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Client.Name, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.Client.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InvoiceDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.InvoiceDate, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.InvoiceDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DueDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DueDate, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.DueDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SalesTaxPercent, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SalesTaxPercent, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.SalesTaxPercent)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GrandTotal, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.GrandTotal, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.GrandTotal)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AmountDue, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.AmountDue, new { disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.AmountDue)
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2"> Paid </label>
+            <div class="col-md-10">
+                <input type="text" disabled="disabled" value=@Model.PaymentAmount />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2"> New Payment</label>
+            <div class="col-md-10">
+                <input name="newPayment" type="text" value=@Model.AmountDue />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

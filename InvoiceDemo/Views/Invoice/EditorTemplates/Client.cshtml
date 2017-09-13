@@ -1,0 +1,15 @@
+﻿@model InvoiceDemo.Models.Client
+
+@if (Model == null)
+{
+    <div class="panel panel-danger">
+        <div class="panel-body">No Client Selected!</div>
+    </div>
+}
+else
+{
+    <div class="panel panel-success">
+        <div class="panel-body"> Name: @Model.Name</div>
+        <div class="panel-body"> Address: @Model.Address</div>
+    </div>
+}

@@ -1,0 +1,53 @@
+<html>
+
+<head>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$( document ).ready(function() {
+    
+
+$("#user").change(function () {
+   
+    var rows = '<table id="example" cellspacing="0" width="70%"><thead><tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>';
+        rows += "<tr><td>description</td><td><input type='text' class='quantity' value='0.00'></td><td><input type='text' value='0.00' class='unitPrice'></td><td><input type='text' value='0.00' class='total'></td></tr></tbody></table>";
+   
+    $("#table").html(rows);
+	var quantity="";
+	var unitPrice="";
+	//var total=0;
+	$(".quantity").on("change", function (){
+      quantity = $(this).val();
+	$(".total").val(quantity*unitPrice);
+	}); 
+	$(".unitPrice").on("change", function (){
+      unitPrice = $(this).val();
+	 //var total = quantity*unitPrice
+	$(".total").val(quantity*unitPrice);
+	}); 
+	
+});
+
+});
+
+
+</script>
+<style>
+#table {
+padding:10px 5px 0px 10px;
+}
+table, th, td {
+   border: 1px solid black;
+}
+</style>
+</head>
+<select id="user" >
+<option value="al">All</option>
+<option value="volvo">Volvo</option>
+<option value="saab">Saab</option>
+<option value="mercedes">Mercedes</option>
+<option value="audi">Audi</option>
+</select> 
+<div id="table">
+
+</div>
+</html>

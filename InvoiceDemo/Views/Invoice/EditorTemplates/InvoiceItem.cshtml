@@ -1,0 +1,26 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+
+@model InvoiceDemo.Models.InvoiceItem
+
+<tr class="">
+    @using (Html.BeginCollectionItem("InvoiceItems"))
+    {
+        <td class="hidden">@Html.HiddenFor(model => model.ID)</td>
+        <td class="">
+            @Html.DropDownListFor(model => model.ProductID,  // Bind the selected id in this
+                                         new SelectList(@ViewBag.Products, "ID", "Name"),    // Selection options
+                                            "Select Product",
+                                            new
+                                            {
+                                                @class = "form-control",
+                                                onchange = "onProductSelectIndexChange($(this));"
+                                            })
+        </td>
+        <td>@Html.TextBoxFor(model => model.Product.Description, new { @class = "form-control", disabled = "disabled" })</td>
+        <td class="text-center">@Html.TextBoxFor(model => model.Product.UnitPrice, new { @onchange = "calculateTotal($(this).closest('tr').index());", @class = "unitprice form-control" })</td>
+        <td class="text-center">@Html.TextBoxFor(model => model.Quantity, new { @onchange = "calculateTotal($(this).closest('tr').index());", @class = "quantity form-control" })</td>
+        <td class="text-center">@Html.TextBoxFor(model => model.Total, new { @class = "total form-control", disabled = "disabled" })</td>
+        <td class="text-center">@Html.EditorFor(model => @Model.Taxable, new { @onchange = "updateTotals();", @class = "Taxable form-control" })</td>
+        <td class="text-center"><button class="btn btn-link" onclick="$(this).closest('tr').remove(); updateTotals();"><span class="glyphicon glyphicon-trash"></span></button></td>
+    }
+</tr>

@@ -1,0 +1,168 @@
+﻿@model InvoiceDemo.Models.Invoice
+
+<h2>Create Invoice</h2>
+
+<div class="container">
+    @using (@Html.BeginForm())
+    {
+        @Html.HiddenFor(model => model.ID)
+        <div class="row">
+            <div class="panel panel-default col-sm-6">
+                <div class="panel-heading">Client</div>
+                <div class="panel-body">
+                    @Html.DropDownListFor(model => model.ClientID,  // Save the selected client's id in this
+                                         new SelectList(@ViewBag.Clients, "ID", "Name"),    // Selection options
+                                            "Select Client",
+                                            new
+                                            {
+                                                @class = "form-control",
+                                                onchange = "onClientIndexChange($(this).find('option:selected').val());"
+                                            })
+                </div>
+                <div id="clientDetails" class="panel-footer">Select a Client!</div>
+            </div>
+            <div class="panel panel-success col-sm-6">
+                <div class="panel-heading ">Invoice Details</div>
+                <div>@Html.EditorFor(model => model, "InvoiceHeading")</div>
+            </div>
+        </div>
+        <div>
+            @*Use the EditorTemplates folders editing partials to show the invoice items*@
+            @Html.EditorFor(model => model.InvoiceItems, "InvoiceItems")
+        </div>
+        <div class="pull-right panel panel-default">
+            <div class="form-horizontal panel-body">
+                @Html.EditorFor(model => model, "Totals")
+            </div>
+        </div>
+        <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+    }
+</div>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // Upon receiving the clientId make an ajax request to find the client and then display the
+        // client details in the clientDetails div
+        function onClientIndexChange(selectedClientId) {
+
+            //alert(selectedClientId);
+
+            // Make a ajax call to the controller to find the client with the selected id
+            // And show the client in the client div upon success
+            $.ajax({
+                url: '@Url.Action("GetClientPartial")',
+                type: 'GET',
+                data: { clientId: selectedClientId },   // Set the selected clientId as the argument for the controller
+                success: function (response) {
+                    // when the AJAX succeeds refresh the div with
+                    // the partial HTML returned by the Invoice controller action
+                    $('#clientDetails').html(response);
+                }
+            });
+        }
+
+        function onProductSelectIndexChange(productSelector) {
+            var selectedProductId = productSelector.find('option:selected').val();
+
+            var rowElement = productSelector.closest('tr');
+            var rowIndex = rowElement.index();
+
+            //alert(" ProductID: " + selectedProductId + " Row: " + rowIndex);
+
+
+            // Make a ajax call to the controller to find the Product with the selected id
+            // And show the client in the client div upon success
+            $.ajax({
+                url: '@Url.Action("SelectProduct")',
+                type: 'POST',
+                data: { index: rowIndex, productId: selectedProductId },
+                success: function (response) {
+                    // when the AJAX succeeds refresh the div with
+                    // the partial HTML returned by the Invoice controller action
+                    //alert(response);
+                    rowElement.replaceWith(response);
+                },
+                complete: function () {
+
+                    calculateTotal(rowIndex);
+                }
+            });
+        }
+
+        function onAddItemClick() {
+
+            // Make a ajax call to the controller add a new editor row in the table
+            // And show the client in the client div upon success
+            $.ajax({
+                url: '@Url.Action("AddNewInvoiceItemRow")',
+                type: 'GET',
+                success: function (response) {
+                    // when the AJAX succeeds refresh the div with
+                    // the partial HTML returned by the Invoice controller action
+                    $('#invoiceItemEditorRows').append(response);
+                }
+            });
+        }
+
+        function calculateTotal(rowIndex) {
+            var rowElement = $("#itemEditorTable tbody tr").eq(rowIndex);
+            var priceElement = rowElement.find(".unitprice");
+            var quantityElement = rowElement.find(".quantity");     // closest search up, find searches childrens
+            var totalElement = rowElement.find(".total");
+
+            //alert("P:" + priceElement.val() + " Q: " + quantityElement.val())
+
+            // Now calculate total
+            // For input fields we use val()
+            var quantity = parseFloat(quantityElement.val()) || 0;   //If parse fail set 0
+
+            // For element other than input we use text()
+            var price = parseFloat(priceElement.val()) || 0;   //If parse fail set 0
+
+            //alert("total:" + quantity * price);
+
+            // Set the value of total
+            totalElement.val(quantity * price);
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+
+            var subTotal = 0;
+
+            $('.total').each(function () {
+                subTotal += parseFloat(this.value);
+            });
+
+            var salesTaxPercent = $('#SalesTaxPercent').val();
+            var totalSalesTax = subTotal * salesTaxPercent / 100;
+            var grandTotal = subTotal + totalSalesTax;
+
+            $('#SubTotal').val(subTotal);
+            $('#TotalSalesTax').val(totalSalesTax);
+            $('#GrandTotal').val(grandTotal);
+            
+            calculatePayments();
+            
+        }
+
+        function calculatePayments() {
+           // var sub = $('#SubTotal').val();
+          //  var total = $('#TotalSalesTax').val();
+           // var grand =sub + total;
+          //  $('#GrandTotal').val(grand);
+
+            var payments = $('#PaymentAmount').val();
+          //  alert(this.vale);
+           var grandTotal = $('#GrandTotal').val();
+         //   alert(grandTotal);
+            $("#AmountDue").val(grandTotal - payments);
+        }
+
+        
+    </script>
+}
